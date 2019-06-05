@@ -8,29 +8,33 @@ sm_container_ptr sm_unused_containers = 0x0 ;
 
 void unused_linked_list(){
 	sm_container_ptr itr = 0x0;
+	sm_container_ptr unused = 0x0;
 	int cond = 0;
 	for(itr = sm_first; itr != 0x0; itr = itr->next){
-                if(itr->status == Unused){
+                if(itr->status == Unused && cond == 0){
 			sm_unused_containers = itr;
-//                        printf("%p->", sm_unused_containers->data);
-                }
+			unused = sm_unused_containers;
+			cond = 1;
+                }else if(itr->status == Unused && cond == 1){
+			unused->next_unused = itr;
+			unused = unused->next_unused;
+		}
         }
-//        printf("\n");
-
 }
 void merge_adjacent_unused(){
 	sm_container_ptr itr = 0x0;
 	sm_container_ptr tmp = 0x0;
 	for(int i = 0; i < 2; i++)
-		for(itr = sm_first; itr->next != 0x0; itr = itr->next){
-			if(itr->status == Unused && itr->next->status == Unused){
+		for(itr = sm_unused_containers; itr->next_unused != 0x0; itr = itr->next_unused){
+			if(itr->next == itr->next_unused){
 				itr->dsize += itr->next->dsize + sizeof(sm_container_t);
-				if(itr->next == sm_last){
+				if(itr->next_unused == sm_last){
 					sm_last = itr;
 					sm_last->next = 0x0;
+					sm_last->next_unused = 0x0;
 					return;
-				}
-				else{
+				}else{
+					itr->next_unused = itr->next_unused->next_unused;
 					itr->next = itr->next->next;
 				}
 			}
@@ -139,9 +143,7 @@ void sfree(void * p)
 		}
 	}
 	unused_linked_list();
-//	for(itr = sm_first; itr->next != 0x0;i++, itr = itr->next){
-		merge_adjacent_unused();
-//	}
+	merge_adjacent_unused();
 }
 
 void print_sm_uses(){
