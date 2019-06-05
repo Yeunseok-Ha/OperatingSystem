@@ -23,5 +23,5 @@ main()
 
 	setitimer(ITIMER_REAL, &t, 0x0) ;
 
-	while (1) ;
+//	while (1) ;
 }
