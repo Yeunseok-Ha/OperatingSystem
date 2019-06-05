@@ -125,9 +125,9 @@ void print_sm_uses(){
 			used = used + (itr->dsize);
 	}
 
-	printf("======================= sm_uses =======================\n");
-	printf("Smalloc amount : %8d\n   Busy Memory : %8d\n Unused Memory : %8d\n",(int)memalloc, (int)used, (int)unused);
-	printf("=======================================================\n");	
+//	printf("======================= sm_uses =======================\n");
+	fprintf(stderr,"Smalloc retained : %8d\n     Busy Memory : %8d\n   Unused Memory : %8d\n",(int)memalloc, (int)used, (int)unused);
+//	printf("=======================================================\n");	
 }
 
 void print_sm_containers()
